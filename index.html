@@ -226,8 +226,8 @@
 /* ================== KONFIG ================== */
 const AGE_NEXT_URL      = "https://otieu.com/4/9850213"; // tujuan tombol LANJUT
 const OFFER_URL         = "https://t.me/asupanupdate1";  // tujuan tombol BATAL
-const AUTO_SHOW_DELAY_MS= 10000;                         // tunda tampil (ms)
-const REMEMBER_TTL_MIN  = 120;                           // TTL agar popup tak muncul lagi
+const AUTO_SHOW_DELAY_MS= 10000;
+const REMEMBER_TTL_MIN  = 120;
 /* ============================================ */
 
 const $root      = document.documentElement;
@@ -249,19 +249,30 @@ function showModal(){
     $dialog.style.transform = 'scale(1)';
   });
   lockScroll(true);
-  setTimeout(()=> $btnGo && $btnGo.focus(), 60);
 }
 
 function destroyModal(){
   try{ lockScroll(false); }catch(_){}
   try{ $backdrop.setAttribute('aria-hidden','true'); }catch(_){}
-  // Hapus dari DOM supaya benar-benar hilang dan tak bisa mengganggu apa pun
-  try{ $backdrop.remove(); }catch(_){
-    // fallback kalau remove() tidak tersedia
-    $backdrop.style.display = 'none';
-  }
+  try{ $backdrop.remove(); }catch(_){ $backdrop.style.display='none'; }
 }
 
+/* === HANYA buka tab baru, JANGAN redirect halaman sekarang === */
+function openInNewTabOnly(url){
+  // Cara 1: anchor click (lebih sukses di banyak browser)
+  const a = document.createElement('a');
+  a.href = url;
+  a.target = '_blank';
+  a.rel = 'noopener noreferrer';
+  // a.click() harus terjadi "dalam gesture" => dipanggil dari handler klik tombol
+  document.body.appendChild(a);
+  a.click();
+  a.remove();
+
+  // Jangan sekali pun set window.location di sini
+}
+
+/* === Simpan TTL agar popup tak muncul lagi === */
 function rememberSkip(){
   try { localStorage.setItem('age_ok_time', String(Date.now())); } catch {}
 }
@@ -272,30 +283,29 @@ function shouldSkip(){
   } catch { return false; }
 }
 
-function openInNewTab(url){
-  const win = window.open(url, '_blank', 'noopener');
-  if(!win) window.location.href = url; // fallback jika popup blocker aktif
-}
-
-function handleChoice(url){
+/* === Klik tombol === */
+function handleChoice(url, ev){
+  if(ev){
+    ev.preventDefault();
+    ev.stopPropagation();
+    if (typeof ev.stopImmediatePropagation === 'function') ev.stopImmediatePropagation();
+  }
   rememberSkip();
-  // Penting: hilangkan popup dulu, baru buka tab baru
-  destroyModal();
-  openInNewTab(url);
+  destroyModal();              // hilangkan popup dulu
+  openInNewTabOnly(url);       // lalu buka tab baru
 }
 
-// Listener
-$btnGo.addEventListener('click',  (e)=>{ e.stopPropagation(); handleChoice(AGE_NEXT_URL); });
-$btnCancel.addEventListener('click',(e)=>{ e.stopPropagation(); handleChoice(OFFER_URL); });
+/* === Pasang listener (dengan pencegah bubbling) === */
+$btnGo.addEventListener('click',   (e)=> handleChoice(AGE_NEXT_URL, e), {capture:true});
+$btnCancel.addEventListener('click',(e)=> handleChoice(OFFER_URL,  e), {capture:true});
 
-// Jangan tutup saat klik backdrop (sesuai kebutuhanmu); kalau mau bisa aktifkan baris di bawah:
-// $backdrop.addEventListener('click', (e)=>{ if(e.target === $backdrop) destroyModal(); });
-
+// Opsional: ESC menutup, backdrop tidak menutup
 window.addEventListener('keydown', (e)=>{ if(e.key==='Escape') destroyModal(); });
 
 // Tampilkan otomatis setelah delay, kecuali masih dalam TTL
 window.addEventListener('load', ()=>{ if(!shouldSkip()) setTimeout(showModal, AUTO_SHOW_DELAY_MS); });
 </script>
+
 
   <!-- ===== Histats (OK di akhir body) ===== -->
   <!-- Histats.com  START  (aync)-->
