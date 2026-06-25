@@ -17,6 +17,7 @@
             background: #0a0a0a;
             color: #fff;
             overflow-x: hidden;
+            min-height: 100vh;
         }
 
         /* ===== LOADER ===== */
@@ -67,6 +68,7 @@
         /* ===== WRAPPER ===== */
         #wrapper {
             display: none;
+            min-height: 100vh;
         }
         #wrapper.visible {
             display: block;
@@ -240,29 +242,6 @@
             height: auto;
         }
 
-        /* ===== VIDEO PLACEHOLDER (jika video tidak bisa di-load) ===== */
-        .video-placeholder {
-            width: 100%;
-            aspect-ratio: 16/9;
-            background: linear-gradient(135deg, #1a0a2a, #2a1a3a);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            color: #ff6b9d;
-            font-size: 1.2rem;
-            gap: 15px;
-            border-radius: 12px;
-        }
-        .video-placeholder .play-icon {
-            font-size: 4rem;
-            opacity: 0.5;
-        }
-        .video-placeholder .video-text {
-            opacity: 0.3;
-            letter-spacing: 3px;
-        }
-
         .promo-list {
             flex: 1 1 30%;
             min-width: 200px;
@@ -375,7 +354,6 @@
             transform: scale(1.03);
         }
 
-        /* ===== IMAGE PLACEHOLDER ===== */
         .img-placeholder {
             width: 100%;
             height: 100%;
@@ -535,119 +513,12 @@
             line-height: 1.5;
         }
 
-        /* ===== AGE GATE ===== */
-        .age-gate {
-            position: fixed;
-            top: 0; left: 0; right: 0; bottom: 0;
-            z-index: 99999;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            background: rgba(0,0,0,0.92);
-            backdrop-filter: blur(15px);
-            transition: all 0.8s;
-        }
-
-        .age-gate.hide {
-            opacity: 0;
-            pointer-events: none;
-        }
-
-        .age-gate__dialog {
-            background: linear-gradient(145deg, #1a0a1a, #0d0d0d);
-            border: 1px solid rgba(255,107,157,0.2);
-            border-radius: 20px;
-            padding: 50px 40px;
-            max-width: 500px;
-            width: 90%;
-            text-align: center;
-            box-shadow: 0 40px 80px rgba(0,0,0,0.8);
-            animation: fadeInUp 0.6s;
-        }
-
-        @keyframes fadeInUp {
-            from { opacity: 0; transform: translateY(30px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        .age-gate__heading {
-            font-size: 2.5rem;
-            font-weight: 900;
-            background: linear-gradient(135deg, #ff2d75, #ff6b9d);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            margin-bottom: 20px;
-        }
-
-        .age-gate__challenge {
-            font-size: 1.4rem;
-            color: #fff;
-            margin-bottom: 30px;
-        }
-
-        .age-gate__buttons {
-            display: flex;
-            gap: 20px;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .age-gate__buttons--yes,
-        .age-gate__buttons--no {
-            padding: 16px 50px;
-            border: none;
-            border-radius: 50px;
-            font-size: 1.1rem;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            min-width: 140px;
-        }
-
-        .age-gate__buttons--yes {
-            background: linear-gradient(135deg, #ff2d75, #ff6b9d);
-            color: #fff;
-            box-shadow: 0 10px 30px rgba(255,45,117,0.3);
-        }
-        .age-gate__buttons--yes:hover {
-            transform: scale(1.05);
-        }
-
-        .age-gate__buttons--no {
-            background: rgba(255,255,255,0.05);
-            color: #888;
-            border: 1px solid rgba(255,255,255,0.1);
-        }
-        .age-gate__buttons--no:hover {
-            background: rgba(255,0,0,0.15);
-            border-color: #ff3333;
-            color: #ff3333;
-        }
-
-        .age-gate__error {
-            display: none;
-            color: #ff4444;
-            margin-top: 20px;
-            padding: 15px;
-            border: 1px solid rgba(255,68,68,0.2);
-            border-radius: 10px;
-        }
-        .age-gate__error.visible {
-            display: block;
-        }
-
         /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
             .columns { flex-direction: column; }
             .promo-list { flex-direction: row; flex-wrap: wrap; }
             .promo-list li { flex: 1 1 45%; min-width: 150px; }
             .post { flex-direction: column !important; }
-            .age-gate__dialog { padding: 30px 20px; }
-            .age-gate__buttons { flex-direction: column; align-items: center; }
-            .age-gate__buttons--yes,
-            .age-gate__buttons--no { width: 100%; max-width: 250px; }
             .info-box .box { flex: 1 1 100%; max-width: 100%; }
             .service { flex-direction: column; align-items: center; }
             .yoti-box { width: 100%; flex-direction: column; text-align: center; }
@@ -721,11 +592,10 @@
                     <div class="columns">
                         <div class="video-holder">
                             <div class="video-box">
-                                <!-- VIDEO -->
                                 <video id="myvideo" width="100%" height="auto" 
-                                       poster="data:image/svg+xml,%3Csvg xmlns='https://upload.3d-sexgames.eu/dsw_box.jpg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%231a0a2a'/%3E%3Ctext x='400' y='225' text-anchor='middle' fill='%23ff6b9d' font-size='24' font-family='Arial'%3EVideo Player%3C/text%3E%3Ctext x='400' y='260' text-anchor='middle' fill='%23666' font-size='14' font-family='Arial'%3EPoster Image%3C/text%3E%3C/svg%3E"
+                                       poster="data:image/svg+xml,%3Csvg xmlns='https://static.porndiscounts.com/data/discounts/discounts/4540/poster.jpg' width='800' height='450'%3E%3Crect width='800' height='450' fill='%231a0a2a'/%3E%3Ctext x='400' y='225' text-anchor='middle' fill='%23ff6b9d' font-size='24' font-family='Arial'%3EVideo Player%3C/text%3E%3Ctext x='400' y='260' text-anchor='middle' fill='%23666' font-size='14' font-family='Arial'%3EPoster Image%3C/text%3E%3C/svg%3E"
                                        controls loop autoplay muted playsinline>
-                                    <source src="https://cdn.aceimg.com/dL1fL2YwG.webm" type="video/mp4">
+                                    <source src="https://www.android-porn-games.com/videos/gameplay.mp4" type="video/mp4">
                                     Your browser does not support the video tag.
                                 </video>
                             </div>
@@ -861,33 +731,12 @@
         document.addEventListener('DOMContentLoaded', function() {
             const loader = document.getElementById('loaderBlock');
             const wrapper = document.getElementById('wrapper');
-            const ageGate = document.getElementById('ageGate');
-            const ageYes = document.getElementById('ageYes');
-            const ageNo = document.getElementById('ageNo');
-            const ageError = document.getElementById('ageError');
 
-            // Cek session
-            if (sessionStorage.getItem('ageVerified') === 'true') {
-                ageGate.classList.add('hide');
+            // Tampilkan loader dulu, lalu langsung ke home
+            setTimeout(function() {
                 loader.classList.add('hidden');
                 wrapper.classList.add('visible');
-            }
-
-            ageYes.addEventListener('click', function() {
-                ageGate.classList.add('hide');
-                sessionStorage.setItem('ageVerified', 'true');
-                loader.classList.remove('hidden');
-                setTimeout(function() {
-                    loader.classList.add('hidden');
-                    wrapper.classList.add('visible');
-                }, 1200);
-            });
-
-            ageNo.addEventListener('click', function() {
-                ageError.classList.add('visible');
-                ageNo.style.opacity = '0.5';
-                ageNo.style.cursor = 'not-allowed';
-            });
+            }, 1500);
 
             // Tutup menu
             document.querySelector('.page-overlay')?.addEventListener('click', function() {
