@@ -1,11 +1,12 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8">
     <title>DreamSexWorld - Interactive 3D Sex Simulation Game</title>
+    <meta name="description" content="DreamSexWorld is the most explicit 3D sex simulation game ever!">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <style>
-        /* Reset & Base */
+        /* ===== RESET & BASE ===== */
         * {
             margin: 0;
             padding: 0;
@@ -13,172 +14,563 @@
         }
 
         body {
+            margin: 0;
             font-family: 'Arial', 'Helvetica Neue', sans-serif;
-            background-color: #0a0a0a;
+            background: #0a0a0a;
             color: #ffffff;
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 20px;
-            background-image: radial-gradient(ellipse at center, #1a0a1a 0%, #0a0a0a 70%);
+            overflow-x: hidden;
         }
 
-        /* Main Container */
-        .container {
-            max-width: 1200px;
+        /* ===== LOADER ===== */
+        @keyframes ball-scale-ripple-multiple {
+            0% {
+                transform: scale(0.1);
+                opacity: 1;
+            }
+            70% {
+                transform: scale(1);
+                opacity: 0.7;
+            }
+            100% {
+                opacity: 0.0;
+            }
+        }
+
+        .loader-block {
+            height: 100vh;
+            background: radial-gradient(rgb(102, 58, 110), rgb(96, 56, 107), rgb(91, 54, 104), rgb(85, 52, 101), rgb(79, 50, 98), rgb(73, 48, 95), rgb(68, 47, 92), rgb(62, 45, 89), rgb(56, 43, 86), rgb(50, 41, 83), rgb(45, 39, 80), rgb(39, 37, 77));
             width: 100%;
-            margin: 0 auto;
-            padding: 20px;
-            text-align: center;
-        }
-
-        /* Header / Tagline */
-        .tagline {
-            font-size: 1.1rem;
-            color: #ff6b9d;
-            text-transform: uppercase;
-            letter-spacing: 3px;
-            margin-bottom: 30px;
-            font-weight: 300;
-            text-shadow: 0 0 20px rgba(255, 107, 157, 0.3);
-        }
-
-        /* Main Title */
-        .main-title {
-            font-size: clamp(2.5rem, 8vw, 5.5rem);
-            font-weight: 900;
-            line-height: 1.1;
-            margin-bottom: 30px;
-            background: linear-gradient(135deg, #ff2d75, #ff6b9d, #ff2d75);
-            background-size: 200% 200%;
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            animation: gradientShift 4s ease-in-out infinite;
-            text-shadow: 0 0 60px rgba(255, 45, 117, 0.2);
-        }
-
-        @keyframes gradientShift {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
-        /* Description */
-        .description {
-            font-size: clamp(1rem, 2vw, 1.4rem);
-            color: #d0d0d0;
-            max-width: 750px;
-            margin: 0 auto 50px auto;
-            line-height: 1.8;
-            font-weight: 300;
-            letter-spacing: 0.5px;
-        }
-
-        .description strong {
-            color: #ff6b9d;
-            font-weight: 600;
-        }
-
-        /* Features Grid */
-        .features {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
-            gap: 30px;
-            margin: 50px 0 60px 0;
-            padding: 0 10px;
-        }
-
-        .feature-item {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 107, 157, 0.15);
-            border-radius: 12px;
-            padding: 35px 20px;
-            transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
-            backdrop-filter: blur(10px);
-            position: relative;
-            overflow: hidden;
-        }
-
-        .feature-item::before {
-            content: '';
-            position: absolute;
+            z-index: 99999;
+            position: fixed;
             top: 0;
             left: 0;
-            right: 0;
-            bottom: 0;
-            background: linear-gradient(135deg, rgba(255, 45, 117, 0.05), transparent);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: opacity 0.8s ease, visibility 0.8s ease;
+        }
+
+        .loader-block.hidden {
             opacity: 0;
-            transition: opacity 0.4s ease;
+            visibility: hidden;
+            pointer-events: none;
         }
 
-        .feature-item:hover {
-            transform: translateY(-10px);
-            border-color: rgba(255, 107, 157, 0.4);
-            box-shadow: 0 20px 40px rgba(255, 45, 117, 0.1);
+        .loader {
+            display: inline-block;
+            position: relative;
         }
 
-        .feature-item:hover::before {
-            opacity: 1;
+        .ball-scale-ripple-multiple {
+            position: relative;
+            transform: translateY(-25px);
+            width: 50px;
+            height: 50px;
         }
 
-        .feature-icon {
-            font-size: 3rem;
-            margin-bottom: 15px;
+        .ball-scale-ripple-multiple > div {
+            animation-fill-mode: both;
+            position: absolute;
+            top: -2px;
+            left: -26px;
+            width: 50px;
+            height: 50px;
+            border-radius: 100%;
+            border: 2px solid #9565a3;
+            animation: ball-scale-ripple-multiple 1.25s 0s infinite cubic-bezier(0.21, 0.53, 0.56, 0.8);
+        }
+
+        .ball-scale-ripple-multiple > div:nth-child(0) {
+            animation-delay: -0.8s;
+        }
+        .ball-scale-ripple-multiple > div:nth-child(1) {
+            animation-delay: -0.6s;
+        }
+        .ball-scale-ripple-multiple > div:nth-child(2) {
+            animation-delay: -0.4s;
+        }
+        .ball-scale-ripple-multiple > div:nth-child(3) {
+            animation-delay: -0.2s;
+        }
+
+        /* ===== WRAPPER ===== */
+        #wrapper {
+            display: none;
+            min-height: 100vh;
+            background: #0a0a0a;
+        }
+
+        #wrapper.visible {
             display: block;
-            filter: drop-shadow(0 0 20px rgba(255, 107, 157, 0.2));
         }
 
-        .feature-item h3 {
-            font-size: 1.1rem;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            color: #ff6b9d;
-            font-weight: 600;
-            position: relative;
-            z-index: 1;
+        /* ===== CONTAINER ===== */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
         }
 
-        .feature-item p {
-            font-size: 0.85rem;
-            color: #999;
-            margin-top: 10px;
-            position: relative;
-            z-index: 1;
+        /* ===== HEADER ===== */
+        #header {
+            padding: 20px 0;
+            background: rgba(0, 0, 0, 0.8);
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            backdrop-filter: blur(10px);
         }
 
-        /* Age Verification Overlay */
-        .age-overlay {
+        #header .container {
+            display: flex;
+            justify-content: flex-end;
+            align-items: center;
+        }
+
+        #show-menu {
+            display: none;
+        }
+
+        .nav-opener {
+            cursor: pointer;
+            padding: 10px;
+            display: inline-block;
+        }
+
+        .nav-opener svg {
+            width: 30px;
+            height: 30px;
+            fill: #ffffff;
+        }
+
+        .page-overlay {
+            display: none;
             position: fixed;
             top: 0;
             left: 0;
             right: 0;
             bottom: 0;
-            background: rgba(0, 0, 0, 0.92);
-            backdrop-filter: blur(15px);
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 999;
+        }
+
+        .slide-nav {
+            position: fixed;
+            top: 0;
+            right: -320px;
+            width: 300px;
+            height: 100%;
+            background: #1a0a1a;
+            padding: 30px 20px;
+            transition: right 0.4s ease;
+            z-index: 1000;
+            overflow-y: auto;
+            border-left: 1px solid rgba(255, 107, 157, 0.1);
+        }
+
+        #show-menu:checked ~ .page-overlay {
+            display: block;
+        }
+
+        #show-menu:checked ~ .slide-nav {
+            right: 0;
+        }
+
+        .slide-nav label {
+            display: block;
+            text-align: right;
+            cursor: pointer;
+            margin-bottom: 30px;
+        }
+
+        .slide-nav label svg {
+            width: 30px;
+            height: 30px;
+            fill: #ffffff;
+        }
+
+        #nav ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        #nav ul li {
+            margin-bottom: 15px;
+        }
+
+        #nav ul li a {
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 1.1rem;
+            letter-spacing: 1px;
+            padding: 10px 0;
+            display: block;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+            transition: color 0.3s;
+        }
+
+        #nav ul li a:hover,
+        #nav ul li.active a {
+            color: #ff6b9d;
+        }
+
+        #nav ul li.join-link a {
+            color: #ff6b9d;
+            font-weight: 700;
+        }
+
+        /* ===== SLOGAN / LOGO ===== */
+        .slogan {
+            padding: 40px 0 20px 0;
+            text-align: center;
+        }
+
+        .logo a {
+            display: inline-block;
+        }
+
+        .logo img {
+            max-width: 300px;
+            height: auto;
+        }
+
+        .title p {
+            color: #ff6b9d;
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 20px auto 0;
+            line-height: 1.6;
+            letter-spacing: 1px;
+        }
+
+        /* ===== PROMO VIDEO SECTION ===== */
+        .promo-video {
+            padding: 40px 0 60px 0;
+        }
+
+        .heading-box {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .heading-box h1 {
+            font-size: clamp(2rem, 5vw, 3.5rem);
+            background: linear-gradient(135deg, #ff2d75, #ff6b9d);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            margin-bottom: 20px;
+            line-height: 1.2;
+        }
+
+        .heading-box .text p {
+            color: #d0d0d0;
+            font-size: 1.1rem;
+            max-width: 750px;
+            margin: 0 auto;
+            line-height: 1.8;
+        }
+
+        .columns {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            margin-bottom: 40px;
+        }
+
+        .video-holder {
+            flex: 1 1 60%;
+            min-width: 300px;
+        }
+
+        .video-box {
+            position: relative;
+            border-radius: 12px;
+            overflow: hidden;
+            background: #000;
+            box-shadow: 0 20px 60px rgba(255, 45, 117, 0.15);
+        }
+
+        .video-box video {
+            display: block;
+            width: 100%;
+            height: auto;
+        }
+
+        .promo-list {
+            flex: 1 1 30%;
+            min-width: 200px;
+            list-style: none;
+            padding: 0;
             display: flex;
             flex-direction: column;
+            justify-content: center;
+            gap: 30px;
+        }
+
+        .promo-list li {
+            text-align: center;
+            padding: 25px 15px;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid rgba(255, 107, 157, 0.1);
+            border-radius: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .promo-list li:hover {
+            border-color: rgba(255, 107, 157, 0.4);
+            transform: translateY(-5px);
+            box-shadow: 0 10px 30px rgba(255, 45, 117, 0.1);
+        }
+
+        .icon-box {
+            margin-bottom: 15px;
+        }
+
+        .icon-box svg {
+            width: 50px;
+            height: 50px;
+            fill: #ff6b9d;
+        }
+
+        .promo-list .title {
+            font-size: 1rem;
+            color: #ffffff;
+            letter-spacing: 1px;
+            line-height: 1.4;
+        }
+
+        .btn-hold {
+            text-align: center;
+            margin-top: 30px;
+        }
+
+        .btn {
+            display: inline-block;
+            padding: 18px 50px;
+            background: linear-gradient(135deg, #ff2d75, #ff6b9d);
+            color: #ffffff;
+            text-transform: uppercase;
+            text-decoration: none;
+            font-weight: 700;
+            letter-spacing: 2px;
+            border-radius: 50px;
+            transition: all 0.3s ease;
+            box-shadow: 0 10px 30px rgba(255, 45, 117, 0.3);
+            border: none;
+            cursor: pointer;
+            font-size: 0.9rem;
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 40px rgba(255, 45, 117, 0.5);
+        }
+
+        .btn-alt {
+            background: transparent;
+            border: 2px solid #ff6b9d;
+            box-shadow: none;
+        }
+
+        .btn-alt:hover {
+            background: rgba(255, 107, 157, 0.1);
+            box-shadow: none;
+        }
+
+        /* ===== VISUAL POST ===== */
+        .visual-post {
+            padding: 60px 0;
+            background: rgba(255, 255, 255, 0.02);
+        }
+
+        .post {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 40px;
+            margin-bottom: 60px;
+            align-items: center;
+        }
+
+        .post:last-child {
+            margin-bottom: 0;
+        }
+
+        .post:nth-child(even) {
+            flex-direction: row-reverse;
+        }
+
+        .img-box {
+            flex: 1 1 45%;
+            min-width: 280px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
+        }
+
+        .img-box img {
+            width: 100%;
+            height: auto;
+            display: block;
+            transition: transform 0.5s ease;
+        }
+
+        .img-box:hover img {
+            transform: scale(1.03);
+        }
+
+        .text-box {
+            flex: 1 1 45%;
+            min-width: 280px;
+        }
+
+        .text-box h2 {
+            font-size: clamp(1.5rem, 3vw, 2.5rem);
+            color: #ff6b9d;
+            margin-bottom: 20px;
+            letter-spacing: 1px;
+        }
+
+        .text-box p {
+            color: #c0c0c0;
+            font-size: 1.05rem;
+            line-height: 1.8;
+        }
+
+        /* ===== FOOTER ===== */
+        #footer {
+            padding: 60px 0 30px 0;
+            background: #0d0d0d;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+        }
+
+        #footer .heading-box h1 {
+            font-size: clamp(1.8rem, 4vw, 3rem);
+            color: #ffd700;
+            -webkit-text-fill-color: #ffd700;
+            background: none;
+        }
+
+        #footer .btn-hold {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 20px;
+            justify-content: center;
+        }
+
+        .service {
+            list-style: none;
+            padding: 40px 0 30px 0;
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px 30px;
+            border-top: 1px solid rgba(255, 255, 255, 0.05);
+            margin-top: 40px;
+        }
+
+        .service li a {
+            color: #888;
+            text-decoration: none;
+            font-size: 0.85rem;
+            transition: color 0.3s;
+        }
+
+        .service li a:hover {
+            color: #ff6b9d;
+        }
+
+        .copy {
+            text-align: center;
+            padding: 20px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            margin-top: 10px;
+        }
+
+        .copy p {
+            color: #555;
+            font-size: 0.75rem;
+            line-height: 1.8;
+            max-width: 800px;
+            margin: 0 auto 5px;
+        }
+
+        .copy a {
+            color: #777;
+            text-decoration: none;
+        }
+
+        .copy a:hover {
+            color: #ff6b9d;
+        }
+
+        .info-box {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 30px;
+            justify-content: center;
+            padding: 40px 0;
+            border-top: 1px solid rgba(255, 255, 255, 0.03);
+            margin-top: 20px;
+        }
+
+        .info-box .box {
+            flex: 1 1 200px;
+            max-width: 300px;
+            text-align: center;
+            padding: 20px;
+        }
+
+        .info-box .icon-box svg {
+            width: 50px;
+            height: 50px;
+            fill: #ff6b9d;
+        }
+
+        .info-box .text-box .title {
+            display: block;
+            color: #ffffff;
+            font-weight: 600;
+            font-size: 0.9rem;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+        }
+
+        .info-box .text-box p {
+            color: #888;
+            font-size: 0.8rem;
+            line-height: 1.5;
+        }
+
+        /* ===== AGE GATE ===== */
+        .age-gate {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            z-index: 99999;
+            display: flex;
             align-items: center;
             justify-content: center;
-            z-index: 9999;
-            padding: 30px;
+            background: rgba(0, 0, 0, 0.92);
+            backdrop-filter: blur(15px);
             transition: all 0.8s ease;
         }
 
-        .age-overlay.hidden {
+        .age-gate.hide {
             opacity: 0;
             pointer-events: none;
+            visibility: hidden;
         }
 
-        .age-box {
+        .age-gate__dialog {
             background: linear-gradient(145deg, #1a0a1a, #0d0d0d);
             border: 1px solid rgba(255, 107, 157, 0.2);
             border-radius: 20px;
             padding: 50px 40px;
             max-width: 500px;
-            width: 100%;
+            width: 90%;
             text-align: center;
             box-shadow: 0 40px 80px rgba(0, 0, 0, 0.8);
             animation: fadeInUp 0.6s ease;
@@ -195,28 +587,29 @@
             }
         }
 
-        .age-box h2 {
-            font-size: 2rem;
-            color: #ff6b9d;
-            margin-bottom: 15px;
-            font-weight: 800;
+        .age-gate__heading img {
+            max-width: 200px;
+            height: auto;
+            margin-bottom: 30px;
         }
 
-        .age-box p {
-            color: #aaa;
-            font-size: 1.1rem;
-            margin-bottom: 35px;
-            line-height: 1.6;
+        .age-gate__challenge {
+            font-size: 1.4rem;
+            color: #ffffff;
+            margin-bottom: 30px;
+            font-weight: 300;
+            letter-spacing: 1px;
         }
 
-        .age-buttons {
+        .age-gate__buttons {
             display: flex;
             gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
         }
 
-        .btn-age {
+        .age-gate__buttons--yes,
+        .age-gate__buttons--no {
             padding: 16px 50px;
             border: none;
             border-radius: 50px;
@@ -229,262 +622,417 @@
             min-width: 140px;
         }
 
-        .btn-yes {
+        .age-gate__buttons--yes {
             background: linear-gradient(135deg, #ff2d75, #ff6b9d);
             color: #fff;
             box-shadow: 0 10px 30px rgba(255, 45, 117, 0.3);
         }
 
-        .btn-yes:hover {
+        .age-gate__buttons--yes:hover {
             transform: scale(1.05);
             box-shadow: 0 15px 40px rgba(255, 45, 117, 0.5);
         }
 
-        .btn-no {
+        .age-gate__buttons--no {
             background: rgba(255, 255, 255, 0.05);
             color: #888;
             border: 1px solid rgba(255, 255, 255, 0.1);
         }
 
-        .btn-no:hover {
+        .age-gate__buttons--no:hover {
             background: rgba(255, 0, 0, 0.15);
             border-color: #ff3333;
             color: #ff3333;
         }
 
-        /* Under 18 Message */
-        .underage-message {
+        .age-gate__errors {
+            margin-top: 20px;
+            min-height: 40px;
+        }
+
+        .age-gate__error {
             display: none;
             color: #ff4444;
-            font-size: 1.2rem;
-            margin-top: 20px;
-            padding: 20px;
+            font-size: 1.1rem;
+            padding: 15px;
             border: 1px solid rgba(255, 68, 68, 0.2);
             border-radius: 10px;
             background: rgba(255, 0, 0, 0.05);
         }
 
-        .underage-message.visible {
+        .age-gate__error.visible {
             display: block;
         }
 
-        /* Footer / Fine Print */
-        .footer {
-            margin-top: 60px;
-            padding-top: 30px;
-            border-top: 1px solid rgba(255, 255, 255, 0.05);
-            font-size: 0.7rem;
-            color: #555;
-            letter-spacing: 1px;
-        }
-
-        .footer a {
-            color: #777;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .footer a:hover {
-            color: #ff6b9d;
-        }
-
-        /* 3D Scene Placeholder (Visual only) */
-        .scene-placeholder {
-            width: 100%;
-            height: 300px;
-            margin: 30px 0;
-            border-radius: 20px;
-            background: radial-gradient(ellipse at center, #1a0a2a, #0a0a0a);
-            border: 1px solid rgba(255, 107, 157, 0.08);
-            position: relative;
-            overflow: hidden;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .scene-placeholder::after {
-            content: '🎮 3D WORLD LOADING...';
-            color: rgba(255, 107, 157, 0.15);
-            font-size: 1.2rem;
-            letter-spacing: 4px;
-            font-weight: 300;
-        }
-
-        .scene-placeholder .glow {
-            position: absolute;
-            width: 200px;
-            height: 200px;
-            background: radial-gradient(circle, rgba(255, 45, 117, 0.08), transparent 70%);
-            border-radius: 50%;
-            animation: pulseGlow 4s ease-in-out infinite;
-        }
-
-        @keyframes pulseGlow {
-            0%, 100% { transform: scale(1); opacity: 0.3; }
-            50% { transform: scale(1.5); opacity: 0.8; }
-        }
-
-        /* Responsive */
+        /* ===== RESPONSIVE ===== */
         @media (max-width: 768px) {
-            .age-box {
+            .columns {
+                flex-direction: column;
+            }
+
+            .promo-list {
+                flex-direction: row;
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+
+            .promo-list li {
+                flex: 1 1 45%;
+                min-width: 150px;
+            }
+
+            .post {
+                flex-direction: column !important;
+            }
+
+            .age-gate__dialog {
                 padding: 30px 20px;
             }
 
-            .age-box h2 {
-                font-size: 1.5rem;
-            }
-
-            .btn-age {
-                padding: 14px 30px;
-                font-size: 0.9rem;
-                min-width: 120px;
-            }
-
-            .features {
-                grid-template-columns: 1fr 1fr;
-                gap: 15px;
-            }
-
-            .feature-item {
-                padding: 25px 15px;
-            }
-
-            .tagline {
-                font-size: 0.8rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .features {
-                grid-template-columns: 1fr;
-            }
-
-            .age-buttons {
+            .age-gate__buttons {
                 flex-direction: column;
                 align-items: center;
             }
 
-            .btn-age {
+            .age-gate__buttons--yes,
+            .age-gate__buttons--no {
                 width: 100%;
                 max-width: 250px;
+            }
+
+            .info-box .box {
+                flex: 1 1 100%;
+                max-width: 100%;
+            }
+
+            .service {
+                flex-direction: column;
+                align-items: center;
+                gap: 10px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .promo-list li {
+                flex: 1 1 100%;
+            }
+
+            .btn {
+                padding: 15px 30px;
+                font-size: 0.8rem;
+                width: 100%;
+                max-width: 300px;
+            }
+
+            .logo img {
+                max-width: 200px;
             }
         }
     </style>
 </head>
 <body>
 
-    <!-- AGE VERIFICATION OVERLAY -->
-    <div class="age-overlay" id="ageOverlay">
-        <div class="age-box">
-            <h2>🔞 ARE YOU OVER 18?</h2>
-            <p>You must be at least 18 years old to access this content. Please verify your age.</p>
-            <div class="age-buttons">
-                <button class="btn-age btn-yes" id="btnYes">Yes, I am</button>
-                <button class="btn-age btn-no" id="btnNo">No, I'm not</button>
-            </div>
-            <div class="underage-message" id="underageMsg">
-                ⚠️ You are not old enough to view this content.
+    <!-- ===== LOADER ===== -->
+    <div class="loader-block" id="loaderBlock">
+        <div class="loader">
+            <div class="loader-inner ball-scale-ripple-multiple">
+                <div></div>
+                <div></div>
+                <div></div>
+                <div></div>
             </div>
         </div>
     </div>
 
-    <!-- MAIN CONTENT -->
-    <div class="container" id="mainContent" style="display: none;">
-
-        <!-- Tagline -->
-        <div class="tagline">🔥 Forget just regular video clips!</div>
-
-        <!-- Main Title -->
-        <h1 class="main-title">DreamSexWorld</h1>
-
-        <!-- Description -->
-        <p class="description">
-            <strong>DreamSexWorld</strong> is the most explicit 3D sex simulation game ever!<br>
-            Explore a stunning XXX 3D world filled with incredibly interactive erotic experiences.<br>
-            You control all the action, the characters and the sex scenes.
-        </p>
-
-        <!-- 3D Scene Placeholder -->
-        <div class="scene-placeholder">
-            <div class="glow"></div>
-        </div>
-
-        <!-- Features -->
-        <div class="features">
-            <div class="feature-item">
-                <span class="feature-icon">🎥</span>
-                <h3>CAMERA ANGLES</h3>
-                <p>Full control of every perspective</p>
-            </div>
-            <div class="feature-item">
-                <span class="feature-icon">🔄</span>
-                <h3>UPDATES</h3>
-                <p>Regular content &amp; feature drops</p>
-            </div>
-            <div class="feature-item">
-                <span class="feature-icon">✨</span>
-                <h3>RE-IMAGINED</h3>
-                <p>Next-gen interactive experience</p>
+    <!-- ===== AGE GATE ===== -->
+    <div class="age-gate" id="ageGate">
+        <div class="age-gate__dialog">
+            <div class="age-gate__block">
+                <div class="age-gate__heading">
+                    <img src="https://dreamsexworld.com/themes/dreamsexworld/assets/images/logo.png" alt="DreamSexWorld Logo">
+                </div>
+                <div class="age-gate__fields">
+                    <p class="age-gate__challenge">Are you over 18 years of age?</p>
+                    <div class="age-gate__buttons">
+                        <button class="age-gate__buttons--yes" id="ageYes">Yes</button>
+                        <button class="age-gate__buttons--no" id="ageNo">No</button>
+                    </div>
+                </div>
+                <div class="age-gate__errors">
+                    <p class="age-gate__error" id="ageError">You are not old enough to view this content</p>
+                </div>
             </div>
         </div>
+    </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <p>© 2026 DreamSexWorld. All rights reserved. | <a href="#">Privacy Policy</a> | <a href="#">Terms of Service</a></p>
-            <p style="margin-top: 8px; color: #333;">18+ only. Must be of legal age to access.</p>
-        </div>
+    <!-- ===== WRAPPER ===== -->
+    <div id="wrapper">
+
+        <!-- ===== HEADER ===== -->
+        <header id="header">
+            <div class="container">
+                <input type="checkbox" id="show-menu" role="button">
+                <label for="show-menu" class="nav-opener">
+                    <svg class="icon icon-menu" viewBox="0 0 24 24" fill="white">
+                        <path d="M3 18h18v-2H3v2zm0-5h18v-2H3v2zm0-7v2h18V6H3z"/>
+                    </svg>
+                </label>
+                <span class="page-overlay js-close-nav"><label for="show-menu"></label></span>
+                <div class="slide-nav">
+                    <label for="show-menu">
+                        <svg class="icon icon-close" viewBox="0 0 24 24" fill="white">
+                            <path d="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z"/>
+                        </svg>
+                    </label>
+                    <nav id="nav">
+                        <ul>
+                            <li class="active"><a href="https://dreamsexworld.com">HOME</a></li>
+                            <li><a href="https://dreamsexworld.com/gallery">GALLERY</a></li>
+                            <li><a href="https://dreamsexworld.com/features">FEATURES</a></li>
+                            <li><a href="https://dreamsexworld.com/members">MEMBERS</a></li>
+                            <li class="join-link"><a href="https://dreamsexworld.com/join">JOIN NOW!</a></li>
+                        </ul>
+                    </nav>
+                </div>
+            </div>
+        </header>
+
+        <!-- ===== MAIN CONTENT ===== -->
+        <main role="main" id="main">
+
+            <!-- SLOGAN -->
+            <div class="slogan">
+                <div class="container">
+                    <div class="logo">
+                        <a href="/">
+                            <img src="https://dreamsexworld.com/themes/dreamsexworld/assets/images/logo.png" alt="DreamSexWorld Logo">
+                        </a>
+                        <div class="title">
+                            <p>Forget just regular video clips! Our game provides you with the hottest interactive sex game experience yet.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- PROMO VIDEO -->
+            <section class="promo-video">
+                <div class="container">
+                    <div class="wrap">
+                        <div class="heading-box">
+                            <h1>DreamSexWorld is the most explicit 3D sex simulation game ever!</h1>
+                            <div class="text">
+                                <p>Explore a stunning XXX 3D world filled with incredibly interactive erotic experiences. You control all the action, the characters and the sex scenes.</p>
+                            </div>
+                        </div>
+                        <div class="columns">
+                            <div class="video-holder">
+                                <div class="video-box js-video">
+                                    <video id="myvideo" width="100%" height="auto" 
+                                           poster="https://dreamsexworld.com/themes/dreamsexworld/assets/images/video-placeholder.jpg" 
+                                           controls loop autoplay muted playsinline>
+                                        <source type="video/webm" src="https://dreamsexworld.com/themes/dreamsexworld/assets/videos/dreamsexworld_4k.webm" />
+                                        <source type="video/mp4" src="https://dreamsexworld.com/themes/dreamsexworld/assets/videos/dreamsexworld_4k.mp4" />
+                                        Your browser does not support the video tag.
+                                    </video>
+                                </div>
+                            </div>
+                            <ul class="promo-list">
+                                <li>
+                                    <div class="icon-box">
+                                        <svg viewBox="0 0 24 24" fill="#ff6b9d">
+                                            <path d="M4 6H2v14c0 1.1.9 2 2 2h14v-2H4V6zm16-4H8c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zm-3 9h-4v4h-2v-4H9V9h4V5h2v4h4v2z"/>
+                                        </svg>
+                                    </div>
+                                    <strong class="title">MULTIPLE <br/> CAMERA ANGLES</strong>
+                                </li>
+                                <li>
+                                    <div class="icon-box">
+                                        <svg viewBox="0 0 24 24" fill="#ff6b9d">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-13h-2v6l5.25 3.15L17 12.23l-4-2.37V7z"/>
+                                        </svg>
+                                    </div>
+                                    <strong class="title">WEEKLY <br/> UPDATES</strong>
+                                </li>
+                                <li>
+                                    <div class="icon-box">
+                                        <svg viewBox="0 0 24 24" fill="#ff6b9d">
+                                            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-1-13h-2v6l5.25 3.15L17 12.23l-4-2.37V7z"/>
+                                        </svg>
+                                    </div>
+                                    <strong class="title">ADULT PHYSICS <br/> RE-IMAGINED</strong>
+                                </li>
+                            </ul>
+                        </div>
+                        <div class="btn-hold">
+                            <a href="/join" class="btn">join and play now!</a>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- VISUAL POST -->
+            <div class="visual-post">
+                <div class="container">
+                    <article class="post">
+                        <div class="img-box">
+                            <a href="/join">
+                                <img src="https://dreamsexworld.com/themes/dreamsexworld/assets/images/img-post1.jpg" alt="Sex Games Are The Future">
+                            </a>
+                        </div>
+                        <div class="text-box">
+                            <h2>SEX GAMES ARE THE FUTURE</h2>
+                            <p>A new game with amazing features that have never been seen before with realistic action and full control over the sex movements. Get what you want!</p>
+                        </div>
+                    </article>
+                    <article class="post">
+                        <div class="img-box">
+                            <a href="/join">
+                                <img src="https://dreamsexworld.com/themes/dreamsexworld/assets/images/img-post2.jpg" alt="Complete Customization">
+                            </a>
+                        </div>
+                        <div class="text-box">
+                            <h2>COMPLETE CUSTOMIZATION</h2>
+                            <p>Create your dream partner. Choose their looks, outfits, eye color, hair color, skin color, and even piercings! Your imagination is the limit.</p>
+                        </div>
+                    </article>
+                </div>
+            </div>
+
+        </main>
+
+        <!-- ===== FOOTER ===== -->
+        <footer id="footer">
+            <div class="container">
+                <div class="heading-box yellow">
+                    <h1>THE ULTIMATE SEX GAME EXPERIENCE AVAILABLE ON PC</h1>
+                    <div class="text">
+                        <p>Get right into the action with camera multiple views with zoom-in and zoom out to catch every hot detail. Experience crazy sex positions and adult movements that you've never seen before.</p>
+                    </div>
+                </div>
+                <div class="btn-hold">
+                    <a href="https://dreamsexworld.com/gallery" class="btn btn-alt">Continue Tour</a>
+                    <a href="https://dreamsexworld.com/join" class="btn">join and play now!</a>
+                </div>
+            </div>
+
+            <div class="container">
+                <ul class="service">
+                    <li><a href="https://dreamsexworld.com/join">Get Access Now!</a></li>
+                    <li><a href="https://dreamsexworld.com/privacy">Privacy Policy</a></li>
+                    <li><a href="https://dreamsexworld.com/members">Members Login</a></li>
+                    <li><a href="https://dreamsexworld.com/18-usc-2257">18 U.S.C. 2257 Record-Keeping Requirements Exemption Statement</a></li>
+                    <li><a href="http://pornaffs.com/" target="_blank">$$ Webmasters $$</a></li>
+                    <li><a href="http://www.epoch.com" target="_blank">Billing Support</a></li>
+                    <li><a href="https://dreamsexworld.com/terms-of-service">Terms of Service</a></li>
+                    <li><a href="https://dreamsexworld.com/content-removal">Content Removal</a></li>
+                    <li><a href="https://dreamsexworld.com/contact">Contact Us</a></li>
+                </ul>
+
+                <div class="copy">
+                    <p>disclaimer: This Website Contains Adult Material, All Members And Persons Appearing On This Site Have Contractually Represented To Us That They Are 18 Years Of Age Or Older.</p>
+                    <p>&copy; Copyright 2026 - <a href="https://www.dreamsexworld.com/">dreamsexworld.com</a></p>
+                </div>
+
+                <div class="info-box">
+                    <div class="box">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24" fill="#ff6b9d">
+                                <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm1-13h-2v6l5.25 3.15L17 12.23l-4-2.37V7z"/>
+                            </svg>
+                        </div>
+                        <div class="text-box">
+                            <span class="title">DISCREET BILLING</span>
+                            <p>*No adult information will be on your statement!</p>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24" fill="#ff6b9d">
+                                <path d="M12 1C8.13 1 5 4.13 5 8v6c0 3.87 3.13 7 7 7s7-3.13 7-7V8c0-3.87-3.13-7-7-7zm5 14c0 2.76-2.24 5-5 5s-5-2.24-5-5V8c0-2.76 2.24-5 5-5s5 2.24 5 5v7z"/>
+                            </svg>
+                        </div>
+                        <div class="text-box">
+                            <span class="title">PRIVACY PROTECTION</span>
+                            <p>*Personal information is never shared or sold to other parties</p>
+                        </div>
+                    </div>
+                    <div class="box">
+                        <div class="icon-box">
+                            <svg viewBox="0 0 24 24" fill="#ff6b9d">
+                                <path d="M18 8h-1V6c0-2.76-2.24-5-5-5S7 3.24 7 6v2H6c-1.1 0-2 .9-2 2v10c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2V10c0-1.1-.9-2-2-2zm-6 9c-1.1 0-2-.9-2-2s.9-2 2-2 2 .9 2 2-.9 2-2 2zm3.1-9H8.9V6c0-1.71 1.39-3.1 3.1-3.1s3.1 1.39 3.1 3.1v2z"/>
+                            </svg>
+                        </div>
+                        <div class="text-box">
+                            <span class="title">SECURE CHECKOUT</span>
+                            <p>*Ecrypted processing ensures a safe and secure transaction</p>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="font-size:13px; width: 310px; text-align: justify; margin: 30px auto 0;">
+                    <img src="https://dreamsexworld.com/themes/dreamsexworld/assets/images/yoti.png" alt="Yoti" style="width: 42px; margin-right:12px; float:left;" />
+                    <span style="padding-top:10px; clear: both; display:block;">
+                        <a href="https://dreamsexworld.com/verified" style="text-decoration: underline; color: #ff6b9d;">VERIFIED WITH YOTI</a><br />
+                        you may be asked to confirm your age<br /> before viewing explicit material.
+                    </span>
+                </p>
+            </div>
+        </footer>
 
     </div>
 
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const overlay = document.getElementById('ageOverlay');
-            const mainContent = document.getElementById('mainContent');
-            const btnYes = document.getElementById('btnYes');
-            const btnNo = document.getElementById('btnNo');
-            const underageMsg = document.getElementById('underageMsg');
 
-            // Check if already verified in this session
+            // ===== LOADER =====
+            const loaderBlock = document.getElementById('loaderBlock');
+            const wrapper = document.getElementById('wrapper');
+            const ageGate = document.getElementById('ageGate');
+            const ageYes = document.getElementById('ageYes');
+            const ageNo = document.getElementById('ageNo');
+            const ageError = document.getElementById('ageError');
+
+            // Check if already verified
             if (sessionStorage.getItem('ageVerified') === 'true') {
-                overlay.classList.add('hidden');
-                mainContent.style.display = 'block';
+                ageGate.classList.add('hide');
+                loaderBlock.classList.add('hidden');
+                wrapper.classList.add('visible');
             }
 
-            // YES button
-            btnYes.addEventListener('click', function() {
-                overlay.classList.add('hidden');
-                mainContent.style.display = 'block';
+            // ===== AGE GATE =====
+            ageYes.addEventListener('click', function() {
+                ageGate.classList.add('hide');
                 sessionStorage.setItem('ageVerified', 'true');
-                underageMsg.classList.remove('visible');
+                // Show loader then wrapper
+                loaderBlock.classList.remove('hidden');
+                setTimeout(function() {
+                    loaderBlock.classList.add('hidden');
+                    wrapper.classList.add('visible');
+                }, 1500);
             });
 
-            // NO button
-            btnNo.addEventListener('click', function() {
-                underageMsg.classList.add('visible');
-                // Optional: redirect or disable content
-                // overlay.style.pointerEvents = 'none'; // Prevent further clicks?
-                // Actually, we want them to be able to click "Yes" still
-                // So we'll just show the message and keep overlay active
-                // But we can also make the buttons less prominent
-                btnNo.style.opacity = '0.5';
-                btnNo.style.cursor = 'not-allowed';
-                // Re-enable after a moment?
+            ageNo.addEventListener('click', function() {
+                ageError.classList.add('visible');
+                ageNo.style.opacity = '0.5';
+                ageNo.style.cursor = 'not-allowed';
             });
 
-            // Optional: Keyboard shortcut (Escape to close? No, age gate must be explicit)
-            // But we can allow "Enter" on Yes for accessibility
-            document.addEventListener('keydown', function(e) {
-                if (e.key === 'Enter' && !overlay.classList.contains('hidden')) {
-                    // If focus is on Yes button or no specific focus, trigger Yes
-                    if (document.activeElement === btnYes || document.activeElement === document.body) {
-                        btnYes.click();
-                    }
-                }
+            // ===== VIDEO AUTO-PLAY FIX =====
+            const video = document.getElementById('myvideo');
+            if (video) {
+                video.play().catch(function(e) {
+                    // Auto-play was prevented, add click listener
+                    document.addEventListener('click', function() {
+                        video.play();
+                    }, { once: true });
+                });
+            }
+
+            // ===== CLOSE NAV ON OVERLAY CLICK =====
+            document.querySelector('.page-overlay')?.addEventListener('click', function() {
+                document.getElementById('show-menu').checked = false;
             });
 
-            // Focus management: auto-focus Yes button
-            btnYes.focus();
         });
     </script>
 
